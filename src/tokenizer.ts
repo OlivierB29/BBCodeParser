@@ -1,10 +1,9 @@
-/// <reference path="bbCodeParser.ts" />
-
+import {BBTag} from "./bbTag";
 //The type of a token
-enum TokenType { Text, StartTag, EndTag }
+export enum TokenType { Text, StartTag, EndTag }
 
 //Represents a token
-class Token {
+export class Token {
     constructor(public tokenType: TokenType, public content: string, public tagAttributes?: Array<string>, public tagStr?: string) {
 
     }
@@ -69,7 +68,7 @@ function asTextToken(token: Token) {
 }
 
 //Represents a tokenizer
-class Tokenizer {
+export class Tokenizer {
     //Creates a new tokenizer with the given tags
     constructor(private bbTags: Array<BBTag>) {
 

@@ -1,5 +1,7 @@
-/// <reference path="bbCodeParseTree.ts" />
-/// <reference path="bbTag.ts" />
+
+import {TreeType}  from "./bbCodeParseTree";
+import {BBTag} from "./bbTag";
+import {BBCodeParseTree} from "./bbCodeParseTree";
 
 //Indicates if the first string ends with the second str
 function endsWith(str: string, endStr: string) {
@@ -43,7 +45,7 @@ function escapeHTML(html) {
 }
 
 //Represents a BB code parser
-class BBCodeParser {
+export class BBCodeParser {
     //Creates a new parser with the given tags
     constructor(private bbTags: Array<BBTag>, private options = { escapeHTML: false }) {
 

@@ -1,11 +1,15 @@
-﻿/// <reference path="bbCodeParser.ts" />
-/// <reference path="tokenizer.ts" />
+﻿
+import {Tokenizer} from "./tokenizer";
+import {Token} from "./tokenizer";
+import {TokenType} from "./tokenizer";
+import {BBTag} from "./bbTag";
+import {BBCodeParser} from "./bbCodeParser";
 
 //The types of the trees
-enum TreeType { Root, Text, Tag }
+export enum TreeType { Root, Text, Tag }
 
 //Represents a parse tree
-class BBCodeParseTree {
+export class BBCodeParseTree {
     //Creates a new parse tree
     constructor(public treeType: TreeType, public content: string, public attributes?: Array<String>, public subTrees?: Array<BBCodeParseTree>) {
         this.subTrees = new Array<BBCodeParseTree>();
