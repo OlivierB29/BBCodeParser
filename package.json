@@ -1,9 +1,10 @@
 {
-  "name": "bbcodeparser",
-  "version": "1.0.0",
+  "name": "typescript-bbcode-parser",
+  "version": "0.0.1",
   "description": "",
   "scripts": {
-    "test": "jasmine-ts  --config=jasmine.json"
+    "test": "jasmine-ts  --config=jasmine.json",
+    "dist": "tsc && npx uglifyjs build/out-tsc/src/*.js --output build/bbCodeParser.min.js"
   },
   "keywords": [],
   "author": "OlivierB29",
@@ -12,11 +13,12 @@
     "@types/jasmine": "^2.6.0",
     "@types/node": "^12.11.1",
     "jasmine": "^2.8.0",
-    "jasmine-ts": "^0.3.0",
     "jasmine-reporters": "^2.2.1",
+    "jasmine-ts": "^0.3.0",
     "jasmine-ts-console-reporter": "^1.0.2",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.0.2"
+    "typescript": "~4.0.2",
+    "uglify-js": "^3.11.3"
   }
 }
