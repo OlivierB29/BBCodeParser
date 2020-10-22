@@ -13,7 +13,7 @@ function endsWith(str: string, endStr: string) {
         return false;
     }
 
-    var inStrEnd = str.substr(str.length - endStr.length, endStr.length);
+    let inStrEnd = str.substr(str.length - endStr.length, endStr.length);
     return endStr == inStrEnd;
 }
 
@@ -27,11 +27,11 @@ function startsWith(str: string, startStr: string) {
         return false;
     }
 
-    var inStrStart = str.substr(0, startStr.length);
+    let inStrStart = str.substr(0, startStr.length);
     return startStr == inStrStart;
 }
 
-var tagsToReplace = {
+let tagsToReplace = {
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;'
@@ -54,7 +54,7 @@ export class BBCodeParser {
     //Parses the given string
     public parseString(content: string, stripTags = false, insertLineBreak = true, escapingHtml = true) {
         //Create the parse tree
-        var parseTree = BBCodeParseTree.buildTree(content, this.bbTags);
+        let parseTree = BBCodeParseTree.buildTree(content, this.bbTags);
 
         //If the tree is invalid, return the input as text
         if (parseTree == null || !parseTree.isValid()) {
@@ -67,12 +67,12 @@ export class BBCodeParser {
 
     //Converts the given subtrees into html
     private treeToHtml(subTrees: Array<BBCodeParseTree>, insertLineBreak: boolean, escapingHtml: boolean, stripTags = false) {
-        var htmlString = "";
-        var suppressLineBreak = false;
+        let htmlString = "";
+        let suppressLineBreak = false;
 
         subTrees.forEach(currentTree => {
             if (currentTree.treeType == TreeType.Text) {
-                var textContent = currentTree.content;
+                let textContent = currentTree.content;
 
                 if(escapingHtml){
                     textContent = (this.options.escapeHTML) ? escapeHTML(textContent) : textContent;
@@ -86,8 +86,8 @@ export class BBCodeParser {
                 htmlString += textContent;
             } else {
                 //Get the tag
-                var bbTag = this.bbTags[currentTree.content];
-                var content = this.treeToHtml(currentTree.subTrees, bbTag.insertLineBreaks, escapingHtml, stripTags);
+                let bbTag = this.bbTags[currentTree.content];
+                let content = this.treeToHtml(currentTree.subTrees, bbTag.insertLineBreaks, escapingHtml, stripTags);
 
                 //Check if to strip the tags
                 if (!stripTags) {
@@ -105,7 +105,7 @@ export class BBCodeParser {
 
     //Returns the default tags
     public static defaultTags(): Array<BBTag> {
-        var bbTags = new Array<BBTag>();
+        let bbTags = new Array<BBTag>();
 
         //Simple tags
         bbTags["b"] = new BBTag("b", true, false, false);
@@ -121,7 +121,7 @@ export class BBCodeParser {
         });
 
         bbTags["url"] = new BBTag("url", true, false, false, (tag, content, attr) => {
-            var link = content;
+            let link = content;
 
             if (attr["url"] != undefined) {
                 link = escapeHTML(attr["url"]);
@@ -135,7 +135,7 @@ export class BBCodeParser {
         });
 
         bbTags["code"] = new BBTag("code", true, false, true, (tag, content, attr) => {
-            var lang = attr["lang"];
+            let lang = attr["lang"];
 
             if (lang !== undefined) {
                 return "<code class=\"" + escapeHTML(lang) + "\">" + content + "</code>";

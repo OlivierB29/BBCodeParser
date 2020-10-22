@@ -23,8 +23,8 @@ export class BBCodeParseTree {
         }
 
         //An tree is valid if all of its subtrees are valid
-        for (var i in this.subTrees) {
-            var currentTree = this.subTrees[i];
+        for (let i in this.subTrees) {
+            let currentTree = this.subTrees[i];
 
             if (currentTree == null || !currentTree.isValid()) {
                 return false;
@@ -42,8 +42,8 @@ export class BBCodeParseTree {
     //Builds a parse tree from the given string
     public static buildTree(str: string, bbTags: Array<BBTag>) {
         //Get the tokens
-        var tokenizer = new Tokenizer(bbTags);
-        var tokens = tokenizer.tokenizeString(str);
+        let tokenizer = new Tokenizer(bbTags);
+        let tokens = tokenizer.tokenizeString(str);
 
         //Build the tree
         return BBCodeParseTree.buildTreeFromTokens(
@@ -66,7 +66,7 @@ export class BBCodeParseTree {
         }
 
         //Remove the first token
-        var currentToken = tokens.pop();
+        let currentToken = tokens.pop();
 
         //Add the text token as a text parse tree
         if (currentToken.tokenType == TokenType.Text) {
@@ -77,7 +77,7 @@ export class BBCodeParseTree {
 
         //Create a new tag tree and find its subtrees
         if (currentToken.tokenType == TokenType.StartTag) {
-            var tagName = currentToken.content;
+            let tagName = currentToken.content;
             rootTree.subTrees.push(
                 BBCodeParseTree.buildTreeFromTokens(
                     new BBCodeParseTree(
@@ -90,7 +90,7 @@ export class BBCodeParseTree {
 
         //Check if its the correct end tag
         if (currentToken.tokenType == TokenType.EndTag) {
-            var tagName = currentToken.content;
+            let tagName = currentToken.content;
 
             if (tagName == currentTag) {
                 return rootTree;

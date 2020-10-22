@@ -24,22 +24,29 @@ function textToken(content: string) {
     return new Token(TokenType.Text, content);
 }
 
-var attrNameChars = "[a-zA-Z0-9\\.\\-_:;/]";
-//var attrNameChars = "\\w";
-//var attrValueChars = "[a-zA-Z0-9\\.\\-_:;#/\\s]";
-// allow more characters
-var attrValueChars = "[^\'\"]";
+let attrNameChars = "[a-zA-Z0-9\\.\\-_:;/]";
+//let attrNameChars = "\\w";
+
+// original pattern of https://github.com/svenslaggare/BBCodeParser
+//let attrValueChars = "[a-zA-Z0-9\\.\\-_:;#/\\s]";
+
+// allow all characters
+//let attrValueChars = "[^\'\"]";
+
+
+// allow ? and = for query parameters
+let attrValueChars = "[\?\=a-zA-Z0-9\\.\\-_:;#/\\s]";
 
 //Creates a new tag token
 function tagToken(match) {
     if (match[1] == undefined) { //Start tag
-        var tagName = match[2];
-        var attributes = new Array<string>();
-        var attrPattern = new RegExp("(" + attrNameChars + "+)?=([\"])(" + attrValueChars + "+)\\2", "g");
+        let tagName = match[2];
+        let attributes = new Array<string>();
+        let attrPattern = new RegExp("(" + attrNameChars + "+)?=([\"])(" + attrValueChars + "+)\\2", "g");
 
-        var attrStr = match[0].substr(1 + tagName.length, match[0].length - 2 - tagName.length);
+        let attrStr = match[0].substr(1 + tagName.length, match[0].length - 2 - tagName.length);
 
-        var attrMatch;
+        let attrMatch;
         while (attrMatch = attrPattern.exec(attrStr)) {
             if (attrMatch[1] == undefined) { //The tag attribute
                 attributes[tagName] = attrMatch[3];
@@ -78,17 +85,17 @@ export class Tokenizer {
 
     //Tokenizes the given string
     tokenizeString(str: string) {
-        var tokens = this.getTokens(str);
-        var newTokens = new Array<Token>();
+        let tokens = this.getTokens(str);
+        let newTokens = new Array<Token>();
 
-        var noNesting = false;
-        var noNestingTag = "";
-        var noNestedTagContent = "";
+        let noNesting = false;
+        let noNestingTag = "";
+        let noNestedTagContent = "";
 
-        for (var i in tokens) {
-            var currentToken = tokens[i];
-            var bbTag: BBTag = this.bbTags[currentToken.content];
-            var addTag = true;
+        for (let i in tokens) {
+            let currentToken = tokens[i];
+            let bbTag: BBTag = this.bbTags[currentToken.content];
+            let addTag = true;
 
             //Replace invalid tags with text
             if (bbTag === undefined && !noNesting) {
@@ -123,15 +130,15 @@ export class Tokenizer {
 
     //Gets the tokens from the given string
     getTokens(str: string) {
-        var pattern = "\\[(\/\\w*)\\]|\\[(\\w*)+(=([\"])" + attrValueChars + "*\\4)?( (" + attrNameChars + "+)?=([\"])(" + attrValueChars + "+)\\7)*\\]";
-        var tagPattern = new RegExp(pattern, "g");
-        var tokens = new Array<Token>();
+        let pattern = "\\[(\/\\w*)\\]|\\[(\\w*)+(=([\"])" + attrValueChars + "*\\4)?( (" + attrNameChars + "+)?=([\"])(" + attrValueChars + "+)\\7)*\\]";
+        let tagPattern = new RegExp(pattern, "g");
+        let tokens = new Array<Token>();
 
-        var match;
-        var lastIndex = 0;
+        let match;
+        let lastIndex = 0;
 
         while (match = tagPattern.exec(str)) {
-            var delta = match.index - lastIndex;
+            let delta = match.index - lastIndex;
 
             if (delta > 0) {
                 tokens.push(textToken(str.substr(lastIndex, delta)));
@@ -141,7 +148,7 @@ export class Tokenizer {
             lastIndex = tagPattern.lastIndex;
         }
 
-        var delta = str.length - lastIndex;
+        let delta = str.length - lastIndex;
 
         if (delta > 0) {
             tokens.push(textToken(str.substr(lastIndex, delta)));
