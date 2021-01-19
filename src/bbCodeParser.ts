@@ -38,8 +38,8 @@ let tagsToReplace = {
 };
 
 //Escapes the given html
-function escapeHTML(html) {
-    return html.replace(/[&<>]/g, function (tag) {
+function escapeHTML(html: any) {
+    return html.replace(/[&<>]/g, function (tag: any) {
         return tagsToReplace[tag] || tag;
     });
 }

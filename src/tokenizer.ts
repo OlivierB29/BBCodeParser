@@ -38,7 +38,7 @@ let attrNameChars = "[a-zA-Z0-9\\.\\-_:;/]";
 let attrValueChars = "[\?\=a-zA-Z0-9\\.\\-_:;#/\\s]";
 
 //Creates a new tag token
-function tagToken(match) {
+function tagToken(match: any) {
     if (match[1] == undefined) { //Start tag
         let tagName = match[2];
         let attributes = new Array<string>();
