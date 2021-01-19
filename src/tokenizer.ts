@@ -4,8 +4,11 @@ export enum TokenType { Text, StartTag, EndTag }
 
 //Represents a token
 export class Token {
-    constructor(public tokenType: TokenType, public content: string, public tagAttributes?: Array<string>, public tagStr?: string) {
-
+    public tagAttributes: Array<string>;
+    public tagStr: string
+    constructor(public tokenType: TokenType, public content: string) {
+        this.tagAttributes = new Array<string>();
+        this.tagStr = '';
     }
 
     //String representation of the token
@@ -54,8 +57,10 @@ function tagToken(match: any) {
                 attributes[attrMatch[1]] = attrMatch[3];
             }
         }
-
-        return new Token(TokenType.StartTag, tagName, attributes, match[0]);
+        let t = new Token(TokenType.StartTag, tagName);
+        t.tagAttributes = attributes;
+        t.tagStr = match[0];
+        return t;
     } else { //End tag
         return new Token(TokenType.EndTag, match[1].substr(1, match[1].length - 1));
     }

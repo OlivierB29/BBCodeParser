@@ -10,8 +10,11 @@ export enum TreeType { Root, Text, Tag }
 
 //Represents a parse tree
 export class BBCodeParseTree {
+    public attributes: Array<String>;
+    public subTrees: Array<BBCodeParseTree>;
     //Creates a new parse tree
-    constructor(public treeType: TreeType, public content: string, public attributes?: Array<String>, public subTrees?: Array<BBCodeParseTree>) {
+    constructor(public treeType: TreeType, public content: string) {
+        this.attributes = new Array<String>();
         this.subTrees = new Array<BBCodeParseTree>();
     }
 
@@ -54,7 +57,7 @@ export class BBCodeParseTree {
     }
 
     //Builds a tree from the given tokens
-    private static buildTreeFromTokens(rootTree: BBCodeParseTree, tokens: Array<Token>, currentTag = ""): BBCodeParseTree {
+    private static buildTreeFromTokens(rootTree: BBCodeParseTree , tokens: Array<Token>, currentTag = ""): BBCodeParseTree  {
         //The root root is invalid, return null
         if (rootTree == null) {
             return null;
@@ -69,27 +72,29 @@ export class BBCodeParseTree {
         let currentToken = tokens.pop();
 
         //Add the text token as a text parse tree
-        if (currentToken.tokenType == TokenType.Text) {
+        if (currentToken && currentToken.tokenType == TokenType.Text) {
             rootTree.subTrees.push(new BBCodeParseTree(
                 TreeType.Text,
                 currentToken.content));
         }
 
         //Create a new tag tree and find its subtrees
-        if (currentToken.tokenType == TokenType.StartTag) {
+        if (currentToken && currentToken.tokenType == TokenType.StartTag) {
             let tagName = currentToken.content;
+            let bBCodeParseTree = new BBCodeParseTree(
+                TreeType.Tag,
+                tagName,
+                );
+                bBCodeParseTree.attributes = currentToken.tagAttributes;
             rootTree.subTrees.push(
-                BBCodeParseTree.buildTreeFromTokens(
-                    new BBCodeParseTree(
-                        TreeType.Tag,
-                        tagName,
-                        currentToken.tagAttributes),
+                
+                BBCodeParseTree.buildTreeFromTokens(bBCodeParseTree,
                     tokens,
                     tagName));
         }
 
         //Check if its the correct end tag
-        if (currentToken.tokenType == TokenType.EndTag) {
+        if (currentToken && currentToken.tokenType == TokenType.EndTag) {
             let tagName = currentToken.content;
 
             if (tagName == currentTag) {
