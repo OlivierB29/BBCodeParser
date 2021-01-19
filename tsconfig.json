@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
+        "strict": false,
+        "suppressImplicitAnyIndexErrors": true,
         "target": "es5",
         "module": "commonjs",
         "sourceMap": true,
