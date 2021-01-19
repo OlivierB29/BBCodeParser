@@ -60,7 +60,7 @@ export class BBCodeParseTree {
     private static buildTreeFromTokens(rootTree: BBCodeParseTree , tokens: Array<Token>, currentTag = ""): BBCodeParseTree  {
         //The root root is invalid, return null
         if (rootTree == null) {
-            return null;
+            return BBCodeParseTree.trick();
         }
 
         //There are no more tokens, return the root
@@ -101,18 +101,25 @@ export class BBCodeParseTree {
                 return rootTree;
             }
             else {
-                return null;
+                return BBCodeParseTree.trick();
             }
         }
 
         //If we got no more tokens, and we have opened an tag but not closed it, return null
         if (tokens.length == 0) {
             if (currentTag != "") {
-                return null;
+                return BBCodeParseTree.trick();
             }
         }
 
         //Proceed to the next token
         return BBCodeParseTree.buildTreeFromTokens(rootTree, tokens, currentTag);
+    }
+
+    /**
+     * explicit dirty trick for TS2322
+     */
+    private static trick(): any {
+        return null;
     }
 }
