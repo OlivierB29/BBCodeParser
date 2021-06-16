@@ -34,11 +34,11 @@ let attrNameChars = "[a-zA-Z0-9\\.\\-_:;/]";
 //let attrValueChars = "[a-zA-Z0-9\\.\\-_:;#/\\s]";
 
 // allow all characters
-//let attrValueChars = "[^\'\"]";
+let attrValueChars = "[^\'\"]";
 
 
 // allow ? and = for query parameters
-let attrValueChars = "[\?\=a-zA-Z0-9\\.\\-_:;#/\\s]";
+//let attrValueChars = "[\?\=a-zA-Z0-9\\.\\-_:;#/\\s]";
 
 //Creates a new tag token
 function tagToken(match: any) {
