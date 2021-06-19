@@ -51,7 +51,7 @@ class TestTokenizer extends TestClass {
     }
 
     testTokenize() {
-        var tokenizer = new Tokenizer(BBCodeParser.defaultTags());
+        var tokenizer = new Tokenizer(BBCodeParser.defaultTags(), BBCodeParser.defaultOptions());
 
         var tokens = tokenizer.tokenizeString("tja[b][i][u]Test[/u][/i][/b]då");
         this.isTrue(new Token(TokenType.Text, "tja").equals(tokens[0]));
@@ -94,7 +94,7 @@ class TestTokenizer extends TestClass {
     testBuildTree() {
         var tags = BBCodeParser.defaultTags();
 
-        var parseTree = BBCodeParseTree.buildTree("tja[b]test[/b]då", tags);
+        var parseTree = BBCodeParseTree.buildTree("tja[b]test[/b]då", tags, BBCodeParser.defaultOptions());
         this.areIdentical(3, parseTree.subTrees.length);
         this.isTrue(parseTree.isValid());
 
@@ -105,7 +105,7 @@ class TestTokenizer extends TestClass {
 
         this.areIdentical("Text - då", parseTree.subTrees[2].toString());
 
-        parseTree = BBCodeParseTree.buildTree("tja[b][i][u]Test[/u][/i][/b]då", tags);
+        parseTree = BBCodeParseTree.buildTree("tja[b][i][u]Test[/u][/i][/b]då", tags, BBCodeParser.defaultOptions());
         this.areIdentical(3, parseTree.subTrees.length);
         this.isTrue(parseTree.isValid());
         this.areIdentical("Text - tja", parseTree.subTrees[0].toString());
@@ -117,7 +117,7 @@ class TestTokenizer extends TestClass {
 
         this.areIdentical("Text - då", parseTree.subTrees[2].toString());
 
-        parseTree = BBCodeParseTree.buildTree("Kod: [code lang=\"js\"]function troll() { return lol(); }[/code]", tags);
+        parseTree = BBCodeParseTree.buildTree("Kod: [code lang=\"js\"]function troll() { return lol(); }[/code]", tags, BBCodeParser.defaultOptions());
         this.areIdentical(2, parseTree.subTrees.length);
         this.areIdentical(true, parseTree.isValid());
 
@@ -127,7 +127,7 @@ class TestTokenizer extends TestClass {
         this.areIdentical("js", parseTree.subTrees[1].attributes["lang"]);
 
         //Suppressed nesting
-        parseTree = BBCodeParseTree.buildTree("bra [code][[1,2,3],[4,5,6]][/code]?", tags);
+        parseTree = BBCodeParseTree.buildTree("bra [code][[1,2,3],[4,5,6]][/code]?", tags, BBCodeParser.defaultOptions());
         this.areIdentical(3, parseTree.subTrees.length);
         this.areIdentical(true, parseTree.isValid());
 
@@ -140,10 +140,10 @@ class TestTokenizer extends TestClass {
         this.areIdentical("Text - ?", parseTree.subTrees[2].toString());
 
         //Invalid trees
-        parseTree = BBCodeParseTree.buildTree("[b][i]tja[/b][/i]", tags);
+        parseTree = BBCodeParseTree.buildTree("[b][i]tja[/b][/i]", tags, BBCodeParser.defaultOptions());
         this.isFalse(parseTree.isValid());
 
-        var parseTree = BBCodeParseTree.buildTree("tja [b]fan[/b då", tags);
+        var parseTree = BBCodeParseTree.buildTree("tja [b]fan[/b då", tags, BBCodeParser.defaultOptions());
         this.isFalse(parseTree.isValid());
     }
 

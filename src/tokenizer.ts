@@ -5,7 +5,8 @@ export enum TokenType { Text, StartTag, EndTag }
 //Represents a token
 export class Token {
     public tagAttributes: Array<string>;
-    public tagStr: string
+    public tagStr: string;
+
     constructor(public tokenType: TokenType, public content: string) {
         this.tagAttributes = new Array<string>();
         this.tagStr = '';
@@ -27,45 +28,6 @@ function textToken(content: string) {
     return new Token(TokenType.Text, content);
 }
 
-let attrNameChars = "[a-zA-Z0-9\\.\\-_:;/]";
-//let attrNameChars = "\\w";
-
-// original pattern of https://github.com/svenslaggare/BBCodeParser
-//let attrValueChars = "[a-zA-Z0-9\\.\\-_:;#/\\s]";
-
-// allow all characters
-let attrValueChars = "[^\'\"]";
-
-
-// allow ? and = for query parameters
-//let attrValueChars = "[\?\=a-zA-Z0-9\\.\\-_:;#/\\s]";
-
-//Creates a new tag token
-function tagToken(match: any) {
-    if (match[1] == undefined) { //Start tag
-        let tagName = match[2];
-        let attributes = new Array<string>();
-        let attrPattern = new RegExp("(" + attrNameChars + "+)?=([\"])(" + attrValueChars + "+)\\2", "g");
-
-        let attrStr = match[0].substr(1 + tagName.length, match[0].length - 2 - tagName.length);
-
-        let attrMatch;
-        while (attrMatch = attrPattern.exec(attrStr)) {
-            if (attrMatch[1] == undefined) { //The tag attribute
-                attributes[tagName] = attrMatch[3];
-            } else { //Normal attribute
-                attributes[attrMatch[1]] = attrMatch[3];
-            }
-        }
-        let t = new Token(TokenType.StartTag, tagName);
-        t.tagAttributes = attributes;
-        t.tagStr = match[0];
-        return t;
-    } else { //End tag
-        return new Token(TokenType.EndTag, match[1].substr(1, match[1].length - 1));
-    }
-}
-
 //Converts the given token to a text token
 function asTextToken(token: Token) {
     if (token.tokenType == TokenType.StartTag) {
@@ -83,8 +45,11 @@ function asTextToken(token: Token) {
 
 //Represents a tokenizer
 export class Tokenizer {
+
     //Creates a new tokenizer with the given tags
-    constructor(private bbTags: Array<BBTag>) {
+    constructor(private bbTags: Array<BBTag>, 
+        public options : any
+        ) {
 
     }
 
@@ -135,7 +100,7 @@ export class Tokenizer {
 
     //Gets the tokens from the given string
     getTokens(str: string) {
-        let pattern = "\\[(\/\\w*)\\]|\\[(\\w*)+(=([\"])" + attrValueChars + "*\\4)?( (" + attrNameChars + "+)?=([\"])(" + attrValueChars + "+)\\7)*\\]";
+        let pattern = "\\[(\/\\w*)\\]|\\[(\\w*)+(=([\"])" + this.options.attrValueChars + "*\\4)?( (" + this.options.attrNameChars + "+)?=([\"])(" + this.options.attrValueChars + "+)\\7)*\\]";
         let tagPattern = new RegExp(pattern, "g");
         let tokens = new Array<Token>();
 
@@ -149,7 +114,7 @@ export class Tokenizer {
                 tokens.push(textToken(str.substr(lastIndex, delta)));
             }
 
-            tokens.push(tagToken(match));
+            tokens.push(this.tagToken(match));
             lastIndex = tagPattern.lastIndex;
         }
 
@@ -161,4 +126,32 @@ export class Tokenizer {
 
         return tokens;
     }
+
+
+//Creates a new tag token
+ tagToken(match: any) {
+    if (match[1] == undefined) { //Start tag
+        let tagName = match[2];
+        let attributes = new Array<string>();
+        let attrPattern = new RegExp("(" + this.options.attrNameChars + "+)?=([\"])(" + this.options.attrValueChars + "+)\\2", "g");
+
+        let attrStr = match[0].substr(1 + tagName.length, match[0].length - 2 - tagName.length);
+
+        let attrMatch;
+        while (attrMatch = attrPattern.exec(attrStr)) {
+            if (attrMatch[1] == undefined) { //The tag attribute
+                attributes[tagName] = attrMatch[3];
+            } else { //Normal attribute
+                attributes[attrMatch[1]] = attrMatch[3];
+            }
+        }
+        let t = new Token(TokenType.StartTag, tagName);
+        t.tagAttributes = attributes;
+        t.tagStr = match[0];
+        return t;
+    } else { //End tag
+        return new Token(TokenType.EndTag, match[1].substr(1, match[1].length - 1));
+    }
+}
+
 }

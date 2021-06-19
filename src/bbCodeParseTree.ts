@@ -43,9 +43,10 @@ export class BBCodeParseTree {
     }
 
     //Builds a parse tree from the given string
-    public static buildTree(str: string, bbTags: Array<BBTag>) {
+    public static buildTree(str: string, bbTags: Array<BBTag>, options: any
+         ) {
         //Get the tokens
-        let tokenizer = new Tokenizer(bbTags);
+        let tokenizer = new Tokenizer(bbTags, options);
         let tokens = tokenizer.tokenizeString(str);
 
         //Build the tree

@@ -38,7 +38,7 @@ let tagsToReplace = {
 };
 
 //Escapes the given html
-function escapeHTML(html: any) {
+function escapeHTML(html: any) : any | any[] {
     return html.replace(/[&<>]/g, function (tag: any) {
         return tagsToReplace[tag] || tag;
     });
@@ -47,14 +47,14 @@ function escapeHTML(html: any) {
 //Represents a BB code parser
 export class BBCodeParser {
     //Creates a new parser with the given tags
-    constructor(private bbTags: Array<BBTag>, private options = { escapeHTML: false }) {
+    constructor(private bbTags: Array<BBTag>, private options = BBCodeParser.defaultOptions()) {
 
     }
 
     //Parses the given string
     public parseString(content: string, stripTags = false, insertLineBreak = true, escapingHtml = true) {
         //Create the parse tree
-        let parseTree = BBCodeParseTree.buildTree(content, this.bbTags);
+        let parseTree = BBCodeParseTree.buildTree(content, this.bbTags, this.options);
 
         //If the tree is invalid, return the input as text
         if (parseTree == null || !parseTree.isValid()) {
@@ -145,6 +145,26 @@ export class BBCodeParser {
         });
 
         return bbTags;
+    }
+
+    public static defaultOptions() {
+            //let attrNameChars = "[a-zA-Z0-9\\.\\-_:;/]";
+//let attrNameChars = "\\w";
+
+// original pattern of https://github.com/svenslaggare/BBCodeParser
+//let attrValueChars = "[a-zA-Z0-9\\.\\-_:;#/\\s]";
+
+// allow all characters
+//let attrValueChars = "[^\'\"]";
+
+
+// url tag : allow ? , = , & for query parameters
+
+        return {
+            escapeHTML: false,
+            attrNameChars : "[a-zA-Z0-9\\.\\-_:;/]",
+            attrValueChars : "[\?\=\&a-zA-Z0-9\\.\\-_:;#/\\s]"        
+     };
     }
 
     public static escapeHTML(content: string) {
